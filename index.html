@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Altech Weather</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      color: #fff;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin: 1rem 0 0.5rem;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    input, button {
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      margin: 0.25rem;
+    }
+
+    button {
+      background: #0077ff;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #005fd9;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.12);
+      padding: 1.2rem;
+      margin: 1rem auto;
+      max-width: 400px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+
+    .tide-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 0.5rem;
+      margin: 0.5rem;
+      display: inline-block;
+      width: 120px;
+    }
+
+    .tide-card img {
+      width: 40px;
+      margin-bottom: 0.25rem;
+    }
+
+    .loading {
+      font-size: 1.2rem;
+    }
+
+    /* --- Carousel Styles --- */
+    .carousel {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 1rem;
+      padding: 1rem 0.5rem;
+      margin: 1rem auto;
+      max-width: 90vw;
+    }
+
+    .card {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1rem;
+      min-width: 200px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .card img {
+      width: 40px;
+      margin-bottom: 0.5rem;
+    }
+
+    .card a {
+      color: #fff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Altech Weather</h1>
+
+<label>
+  <input type="checkbox" onchange="document.body.classList.toggle('night')" />
+  🌞/🌙 Toggle Theme
+</label>
+
+<div>
+  <input type="text" id="cityInput" placeholder="Enter city..." />
+  <button onclick="searchCity()">Search</button>
+</div>
+
+<div class="container" id="weatherApp">
+  <div class="loading">Loading weather...</div>
+</div>
+
+<!-- 🌐 Scrollable Services Carousel -->
+<div>
+  <h2 style="margin-top:2rem;">🌟 Our Services</h2>
+  <div class="carousel" id="servicesCarousel">
+   <a href="https://altechit.netlify.app" target="_blank"> <div class="card">
+      <img src="https://cdn-icons-png.flaticon.com/512/841/841364.png" />
+      <div><strong>Web Design</strong></div>
+      <p>Modern & responsive websites.</p>
+    </div></a>
+    
+    <a href="https://altechit.netlify.app" target="_blank"><div class="card">
+      <img src="https://cdn-icons-png.flaticon.com/512/857/857681.png" />
+      <div><strong>Video Editing</strong></div>
+      <p>Creative promo and event videos.</p>
+    </div></a>
+    
+    <a href="https://altechit.netlify.app" target="_blank"><div class="card">
+      <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" />
+      <div><strong>Graphic Design</strong></div>
+      <p>Logos, posters, and branding.</p>
+    </div></a>
+
+    <a href="https://edulearnit.netlify.app" target="_blank"><div class="card">
+      <img src="https://cdn-icons-png.flaticon.com/512/538/538931.png" />
+      <div><strong>E-Learning platform</strong></div>
+      <p>Boost your digital skills.</p>
+    </div></a>
+
+    <a href="https://electronicsg.netlify.app" target="_blank"><div class="card">
+      <img src="https://cdn-icons-png.flaticon.com/512/2641/2641167.png" />
+      <div><strong>E-Commerce</strong></div>
+      <p>Easy online shopping with Altech.</p>
+    </div></a>
+
+   <a href="https://quickfix1.netlify.app" target="_blank"><div class="card">
+      <img src="https://cdn-icons-png.flaticon.com/512/3638/3638416.png" />
+      <div><strong>Phone repair</strong></div>
+      <p>Quick and reliable phone repairs.</p>
+    </div></a>
+
+   <a href="https://altechit.netlify.app" target="_blank"> <div class="card">
+      <img src="https://cdn-icons-png.flaticon.com/512/535/535230.png" />
+      <div><strong>ALTECH</strong></div>
+    <p>Explore tech</p>
+    </div></a>
+  </div>
+</div>
+<script>
+  // Auto-slide carousel horizontally
+  (function() {
+    const carousel = document.getElementById('servicesCarousel');
+    let cardWidth = 0;
+    let index = 0;
+    let cards = carousel.children.length;
+
+    function slide() {
+      // Find the first .card element to get width
+      const firstCard = carousel.querySelector('.card');
+      if (!firstCard) return;
+      cardWidth = firstCard.offsetWidth + 16; // 16px gap
+
+      index = (index + 1) % cards;
+      carousel.scrollTo({
+        left: index * cardWidth,
+        behavior: 'smooth'
+      });
+    }
+
+    // Reset scroll if user scrolls manually
+    carousel.addEventListener('scroll', () => {
+      const firstCard = carousel.querySelector('.card');
+      if (!firstCard) return;
+      cardWidth = firstCard.offsetWidth + 16;
+      index = Math.round(carousel.scrollLeft / cardWidth);
+    });
+
+    setInterval(slide, 2500);
+  })();
+</script>
+
+<script>
+const weatherApiKey = "f460fa92632f4124a70100437252306";
+const worldTidesKey = "3337cf82-4e19-490e-b08c-b2b63528553e";
+
+let lastWeatherData = null;
+let lastCoords = null;
+
+function displayWeather(data, tides = [], showTides = false) {
+  const loc = data.location;
+  const condition = data.current.condition;
+  const astro = data.forecast.forecastday[0].astro;
+
+  const now = new Date(loc.localtime);
+  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const dateStr = now.toDateString();
+
+  let html = `
+    <img src="https:${condition.icon}" style="width:80px;" />
+    <h2>${Math.round(data.current.temp_c)}°C</h2>
+    <div>${condition.text}</div>
+    <div>${loc.name}, ${loc.country}</div>
+    <div>📅 ${dateStr} | 🕒 ${timeStr}</div>
+    <div>🌅 Sunrise: ${astro.sunrise} | 🌇 Sunset: ${astro.sunset}</div>
+  `;
+
+  if (showTides && tides.length > 0) {
+    html += `<h3>🌊 Tide Times</h3><div>`;
+    tides.forEach(t => {
+      const tTime = new Date(t.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const icon = t.type === "High"
+        ? "https://cdn-icons-png.flaticon.com/512/4149/4149640.png"
+        : "https://cdn-icons-png.flaticon.com/512/4149/4149635.png";
+      html += `
+        <div class="tide-card">
+          <img src="${icon}" alt="${t.type}" />
+          <div><strong>${t.type} Tide</strong></div>
+          <div>${tTime}</div>
+        </div>`;
+    });
+    html += `</div>`;
+  } else if (!showTides) {
+    html += `<button onclick="loadTides()">🌊 Show Tides</button>`;
+  } else {
+    html += `<p>No tide data available for this location.</p>`;
+  }
+
+  document.getElementById("weatherApp").innerHTML = html;
+}
+
+async function getTides(lat, lon) {
+  const today = new Date().toISOString().split('T')[0];
+  const url = `https://www.worldtides.info/api/v3?extremes&lat=${lat}&lon=${lon}&date=${today}&key=${worldTidesKey}`;
+  try {
+    const res = await fetch(url);
+    const json = await res.json();
+    return json.extremes || [];
+  } catch {
+    return [];
+  }
+}
+
+function searchCity() {
+  const city = document.getElementById("cityInput").value.trim();
+  if (!city) return;
+  document.getElementById("weatherApp").innerHTML = `<div class="loading">Fetching weather for ${city}...</div>`;
+  fetch(`https://api.weatherapi.com/v1/forecast.json?key=${weatherApiKey}&q=${city}&days=1`)
+    .then(res => res.json())
+    .then(data => {
+      lastWeatherData = data;
+      lastCoords = data.location;
+      displayWeather(data);
+    })
+    .catch(() => {
+      document.getElementById("weatherApp").innerHTML = `<div class="loading">❌ Failed to fetch weather.</div>`;
+    });
+}
+
+function loadTides() {
+  if (!lastCoords || !lastWeatherData) return;
+  document.getElementById("weatherApp").innerHTML += `<div class="loading">Loading tide data...</div>`;
+  getTides(lastCoords.lat, lastCoords.lon)
+    .then(tides => {
+      displayWeather(lastWeatherData, tides, true);
+    });
+}
+
+function getCurrentWeather() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      const { latitude, longitude } = pos.coords;
+      fetch(`https://api.weatherapi.com/v1/forecast.json?key=${weatherApiKey}&q=${latitude},${longitude}&days=1`)
+        .then(res => res.json())
+        .then(data => {
+          lastWeatherData = data;
+          lastCoords = data.location;
+          displayWeather(data);
+        });
+    }, () => {
+      document.getElementById("weatherApp").innerHTML = `<div class="loading">Location access denied.</div>`;
+    });
+  } else {
+    document.getElementById("weatherApp").innerHTML = `<div class="loading">Geolocation not supported.</div>`;
+  }
+}
+
+// Initialize
+getCurrentWeather();
+</script>
+
+</body>
+</html>
