@@ -215,16 +215,24 @@ function displayWeather(data, tides = [], showTides = false) {
   const condition = data.current.condition;
   const astro = data.forecast.forecastday[0].astro;
 
-  const now = new Date(loc.localtime);
-  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  const dateStr = now.toDateString();
+  let offset = data.location.tz_id;
+let dateStr = new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+
+let liveClockId = setInterval(() => {
+  let now = new Date();
+  let options = { timeZone: offset, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  let liveTime = now.toLocaleTimeString([], options);
+  const timeBox = document.getElementById("live-time");
+  if (timeBox) timeBox.innerText = `🕒 ${liveTime}`;
+}, 1000);
+
 
   let html = `
     <img src="https:${condition.icon}" style="width:80px;" />
     <h2>${Math.round(data.current.temp_c)}°C</h2>
     <div>${condition.text}</div>
     <div>${loc.name}, ${loc.country}</div>
-    <div>📅 ${dateStr} | 🕒 ${timeStr}</div>
+    <div>📅 ${dateStr} | <span id="live-time">🕒 Loading...</span></div>
     <div>🌅 Sunrise: ${astro.sunrise} | 🌇 Sunset: ${astro.sunset}</div>
   `;
 
