@@ -325,23 +325,23 @@ getCurrentWeather();
 <style>
 .floating-btn-website {
   position: fixed;
-  bottom: 10px;
-  right: 10px;
+  bottom: 30px;
+  right: 20px;
   z-index: 9999;
   background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(6px);
   color: #fff;
-  padding: 18px 32px;
+  padding: 10px 18px;
   border-radius: 999px;
-  box-shadow: 0 8px 24px rgba(56,189,248,0.25);
-  font-size: 1.15rem;
+  box-shadow: 0 4px 12px rgba(56,189,248,0.18);
+  font-size: 0.95rem;
   font-weight: bold;
   border: none;
   cursor: pointer;
   outline: none;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   animation: floatBtnPulse 1.5s infinite alternate;
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -364,4 +364,17 @@ getCurrentWeather();
 </a>
 
 </body>
+<footer style="
+  background: rgba(0, 0, 0, 0.5); 
+  color: #fff; 
+  padding: 1rem; 
+  position: fixed; 
+  left: 0; 
+  bottom: 0; 
+  width: 100%; 
+  text-align: center;
+  z-index: 1000;
+">
+  <p class="text-center py-4" style="margin:0;">&copy; 2025 ALTECH. All rights reserved.</p>
+</footer>
 </html>
