@@ -12,6 +12,7 @@
       background: linear-gradient(135deg, #89f7fe, #66a6ff);
       color: #fff;
       text-align: center;
+     
     }
 
     h1 {
@@ -88,6 +89,7 @@
       text-align: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
       transition: transform 0.3s;
+      
     }
 
     .card:hover {
@@ -101,7 +103,7 @@
 
     .card a {
       color: #fff;
-      text-decoration: underline;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -127,43 +129,43 @@
 <div>
   <h2 style="margin-top:2rem;">🌟 Our Services</h2>
   <div class="carousel" id="servicesCarousel">
-   <a href="https://altechit.netlify.app" target="_blank"> <div class="card">
+   <a href="https://altechit.netlify.app" target="_blank" style="text-decoration:none;"> <div class="card">
       <img src="https://cdn-icons-png.flaticon.com/512/841/841364.png" />
       <div><strong>Web Design</strong></div>
       <p>Modern & responsive websites.</p>
     </div></a>
     
-    <a href="https://altechit.netlify.app" target="_blank"><div class="card">
+    <a href="https://altechit.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
       <img src="https://cdn-icons-png.flaticon.com/512/857/857681.png" />
       <div><strong>Video Editing</strong></div>
       <p>Creative promo and event videos.</p>
     </div></a>
     
-    <a href="https://altechit.netlify.app" target="_blank"><div class="card">
+    <a href="https://altechit.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
       <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" />
       <div><strong>Graphic Design</strong></div>
       <p>Logos, posters, and branding.</p>
     </div></a>
 
-    <a href="https://edulearnit.netlify.app" target="_blank"><div class="card">
+    <a href="https://edulearnit.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
       <img src="https://cdn-icons-png.flaticon.com/512/538/538931.png" />
       <div><strong>E-Learning platform</strong></div>
       <p>Boost your digital skills.</p>
     </div></a>
 
-    <a href="https://electronicsg.netlify.app" target="_blank"><div class="card">
+    <a href="https://electronicsg.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
       <img src="https://cdn-icons-png.flaticon.com/512/2641/2641167.png" />
       <div><strong>E-Commerce</strong></div>
       <p>Easy online shopping with Altech.</p>
     </div></a>
 
-   <a href="https://quickfix1.netlify.app" target="_blank"><div class="card">
+   <a href="https://quickfix1.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
       <img src="https://cdn-icons-png.flaticon.com/512/3638/3638416.png" />
       <div><strong>Phone repair</strong></div>
       <p>Quick and reliable phone repairs.</p>
     </div></a>
 
-   <a href="https://altechit.netlify.app" target="_blank"> <div class="card">
+   <a href="https://altechit.netlify.app" target="_blank" style="text-decoration:none;"> <div class="card">
       <img src="https://cdn-icons-png.flaticon.com/512/535/535230.png" />
       <div><strong>ALTECH</strong></div>
     <p>Explore tech</p>
@@ -319,6 +321,46 @@ function getCurrentWeather() {
 // Initialize
 getCurrentWeather();
 </script>
+<!-- Animated Floating Button -->
+<style>
+.floating-btn-website {
+  position: fixed;
+  bottom: 150px;
+  right: 10px;
+  z-index: 9999;
+  background: linear-gradient(90deg, #9ca2a5 0%, #d5ecea 100%);
+  color: #fff;
+  padding: 18px 32px;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(56,189,248,0.25);
+  font-size: 1.15rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: floatBtnPulse 1.5s infinite alternate;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.floating-btn-website:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 32px rgba(54, 186, 190, 0.35);
+  background: linear-gradient(90deg, #67767c 0%, #96b0e9 100%);
+}
+@keyframes floatBtnPulse {
+  0% { box-shadow: 0 8px 24px rgba(56,189,248,0.25); }
+  100% { box-shadow: 0 16px 32px rgba(56,189,248,0.35); }
+}
+.floating-btn-website .fa-globe {
+  font-size: 1.3em;
+}
+</style>
+<a href="https://altech.ct.ws/" target="_blank" style="text-decoration:none;" class="floating-btn-website" aria-label="I need a website">
+  <i class="fa fa-globe"></i>
+  Need a website?
+</a>
 
 </body>
 </html>
