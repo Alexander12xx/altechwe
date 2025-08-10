@@ -4,377 +4,636 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Altech Weather</title>
+  <meta name="theme-color" content="#0b1220" />
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #89f7fe, #66a6ff);
-      color: #fff;
-      text-align: center;
-     
+    /* ---------- Base & Layout ---------- */
+    :root{
+      --glass: rgba(255,255,255,0.06);
+      --glass-2: rgba(255,255,255,0.08);
+      --accent: #3ee7ff;
+      --accent-2: #7a77ff;
+      --text: #e9f3ff;
+      --muted: rgba(233,243,255,0.75);
+      --shadow: 0 12px 40px rgba(2,6,23,0.6);
+      --glass-border: rgba(255,255,255,0.06);
     }
 
-    h1 {
-      font-size: 2.2rem;
-      margin: 1rem 0 0.5rem;
-      text-shadow: 1px 1px 2px #000;
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(1200px 600px at 10% 20%, rgba(255,255,255,0.02), transparent),
+                  linear-gradient(135deg, #071226 0%, #06243b 60%, #0b1830 100%);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-y: auto;
     }
 
-    input, button {
-      padding: 0.6rem 1rem;
-      border-radius: 8px;
-      border: none;
-      font-size: 1rem;
-      margin: 0.25rem;
+    /* ---------- Header ---------- */
+    header {
+      padding: 18px 20px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      max-width:980px;
+      margin:18px auto 8px;
+    }
+    .brand {
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .logo {
+      width:56px; height:56px; border-radius:12px;
+      background: linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:flex; align-items:center; justify-content:center;
+      box-shadow: 0 6px 20px rgba(122,119,255,0.12), inset 0 -6px 18px rgba(0,0,0,0.12);
+      font-weight:800; color:#021021;
+      font-size:16px;
+    }
+    h1 { font-size:1.2rem; margin:0; color:var(--text); letter-spacing:0.3px; }
+    p.subtitle { margin:0; font-size:0.78rem; color:var(--muted); }
+
+    /* ---------- Main widget card ---------- */
+    .main {
+      max-width:480px;
+      margin: 14px auto;
+      padding:18px;
+      border-radius:18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: var(--shadow);
+      border: 1px solid var(--glass-border);
+      position:relative;
+      overflow:hidden;
     }
 
-    button {
-      background: #0077ff;
-      color: #fff;
-      cursor: pointer;
-      transition: background 0.3s ease;
+    /* animated gradient blobs */
+    .bg-blob {
+      position:absolute;
+      pointer-events:none;
+      filter: blur(50px) saturate(120%);
+      mix-blend-mode:screen;
+      opacity:0.75;
+    }
+    .blob-a { width:420px; height:420px; left:-60px; top:-120px; background: radial-gradient(circle at 30% 30%, #2ee6ff, transparent 30%); animation: floaty 14s ease-in-out infinite; }
+    .blob-b { width:320px; height:320px; right:-80px; bottom:-120px; background: radial-gradient(circle at 70% 70%, #8257ff, transparent 30%); animation: floaty 18s ease-in-out infinite reverse; }
+    @keyframes floaty { 0%{ transform: translateY(-6px) rotate(0deg)} 50%{ transform: translateY(6px) rotate(7deg)} 100%{ transform: translateY(-6px) rotate(0deg)} }
+
+    /* weather header */
+    .weather-top {
+      display:flex;
+      align-items:center;
+      gap:14px;
+      z-index:2;
+      position:relative;
+    }
+    .weather-icon {
+      width:94px; height:94px; border-radius:18px;
+      display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 6px 18px rgba(2,6,23,0.5);
+    }
+    .temp {
+      font-size:44px; font-weight:700; line-height:1;
+      text-shadow: 0 8px 30px rgba(0,0,0,0.45);
+    }
+    .meta {
+      color:var(--muted); font-size:0.95rem;
     }
 
-    button:hover {
-      background: #005fd9;
+    /* chat bubble area */
+    .chat {
+      margin-top:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;
+      padding:12px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.35);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .chat-avatar {
+      width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+      background: linear-gradient(135deg,#9be3ff, #7b6dff);
+      color:#021021; font-weight:700; font-size:18px;
+      flex-shrink:0;
+    }
+    .chat-body { flex:1; }
+    .chat-bubble {
+      background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      padding:10px 12px;
+      border-radius:12px;
+      display:inline-block;
+      color:var(--text);
+      font-size:0.95rem;
+      line-height:1.2;
+      transform-origin:left;
+      animation: popIn 420ms cubic-bezier(.15,.9,.3,1);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    @keyframes popIn { from { transform: translateY(8px) scale(.98); opacity:0 } to { transform: translateY(0) scale(1); opacity:1 } }
+
+    /* typing dots */
+    .typing {
+      width:54px; height:20px; display:flex; gap:6px; align-items:center; padding:6px 8px;
+    }
+    .dot {
+      width:8px; height:8px; background: rgba(255,255,255,0.12); border-radius:50%;
+      animation: blink 1.2s infinite;
+      opacity:0.9;
+    }
+    .dot:nth-child(1){ animation-delay: 0s }
+    .dot:nth-child(2){ animation-delay: 0.15s }
+    .dot:nth-child(3){ animation-delay: 0.3s }
+    @keyframes blink { 0%{ transform: translateY(0); opacity:0.25 } 50%{ transform: translateY(-6px); opacity:1 } 100%{ transform: translateY(0); opacity:0.25 } }
+
+    /* controls and input */
+    .controls { display:flex; gap:8px; margin-top:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    input[type="text"]{ padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:var(--text); width:60%; outline:none; }
+    button.action {
+      padding:10px 14px; border-radius:10px; border:none; cursor:pointer;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:#021021; font-weight:700; box-shadow: 0 8px 24px rgba(122,119,255,0.12);
     }
 
-    .container {
-      background: rgba(255, 255, 255, 0.12);
-      padding: 1.2rem;
-      margin: 1rem auto;
-      max-width: 400px;
-      border-radius: 12px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-    }
+    /* tide card area (kept from your style but integrated) */
+    .tide-container { margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
 
     .tide-card {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 0.5rem;
-      margin: 0.5rem;
-      display: inline-block;
-      width: 120px;
+      background: rgba(255,255,255,0.04);
+      border-radius:10px;
+      padding:8px;
+      margin:4px;
+      display:inline-flex;
+      flex-direction:column;
+      align-items:center;
+      width:110px;
+      border:1px solid rgba(255,255,255,0.03);
+      transition: transform .25s;
     }
+    .tide-card:hover{ transform: translateY(-6px) scale(1.02); }
 
-    .tide-card img {
-      width: 40px;
-      margin-bottom: 0.25rem;
-    }
+    /* services carousel (kept) */
+    .services { margin:26px auto 90px; max-width:980px; text-align:left; padding:0 18px; }
+    .carousel { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:1rem; padding:1rem 0.5rem; }
+    .card { flex:0 0 auto; scroll-snap-align:start; background: rgba(255,255,255,0.02); border-radius:12px; padding:1rem; min-width:200px; box-shadow: 0 6px 18px rgba(0,0,0,0.25); transition: transform .3s; border:1px solid rgba(255,255,255,0.03); }
+    .card:hover{ transform: translateY(-6px) scale(1.02); }
 
-    .loading {
-      font-size: 1.2rem;
-    }
+    /* floating FAB */
+    .floating-btn-website { position:fixed; bottom:28px; right:18px; z-index:9999; background: linear-gradient(90deg,#fff 0%, #fff 50%); color:#0b1220; padding:10px 14px; border-radius:999px; font-weight:700; box-shadow: 0 12px 36px rgba(2,6,23,0.6); display:flex; gap:10px; align-items:center; border: none; text-decoration:none; }
+    .floating-btn-website:hover{ transform: translateY(-6px); }
 
-    /* --- Carousel Styles --- */
-    .carousel {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      gap: 1rem;
-      padding: 1rem 0.5rem;
-      margin: 1rem auto;
-      max-width: 90vw;
-    }
+    /* footer */
+    footer.mainfoot { position:fixed; left:0; bottom:0; width:100%; text-align:center; background: linear-gradient(180deg, rgba(2,6,23,0.6), rgba(2,6,23,0.8)); padding:10px 8px; font-size:0.9rem; color:var(--muted); z-index:999; }
 
-    .card {
-      flex: 0 0 auto;
-      scroll-snap-align: start;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 1rem;
-      min-width: 200px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      transition: transform 0.3s;
-      
-    }
-
-    .card:hover {
-      transform: scale(1.05);
-    }
-
-    .card img {
-      width: 40px;
-      margin-bottom: 0.5rem;
-    }
-
-    .card a {
-      color: #fff;
-      text-decoration: none;
+    /* small screens */
+    @media (max-width:520px){
+      .main { margin:12px; padding:14px; border-radius:14px; }
+      .weather-icon{ width:74px; height:74px }
+      .temp{ font-size:36px }
+      .brand h1{ font-size:1rem }
     }
   </style>
 </head>
 <body>
 
-<h1>Altech Weather</h1>
+  <!-- decorative blobs -->
+  <div class="bg-blob blob-a" aria-hidden="true"></div>
+  <div class="bg-blob blob-b" aria-hidden="true"></div>
 
-<label>
-  <input type="checkbox" onchange="document.body.classList.toggle('night')" />
-  🌞/🌙 Toggle Theme
-</label>
+  <header>
+    <div class="brand">
+      <div class="logo">AL</div>
+      <div>
+        <h1>Altech Weather</h1>
+        <p class="subtitle">Smart, friendly, and futuristic weather for your pocket</p>
+      </div>
+    </div>
 
-<div>
-  <input type="text" id="cityInput" placeholder="Enter city..." />
-  <button onclick="searchCity()">Search</button>
-</div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <label style="display:flex; gap:8px; align-items:center; cursor:pointer;">
+        <input id="themeToggle" type="checkbox" />
+        <small style="color:var(--muted);">Night</small>
+      </label>
+      <button class="action" id="refreshBtn" title="Refresh weather">↻ Refresh</button>
+    </div>
+  </header>
 
-<div class="container" id="weatherApp">
-  <div class="loading">Loading weather...</div>
-</div>
+  <main class="main" role="region" aria-label="Weather widget">
+    <div class="weather-top">
+      <div class="weather-icon" id="weatherIconHolder">
+        <!-- icon svg will be injected -->
+        <svg id="weatherIcon" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0.55"/></linearGradient></defs>
+          <circle cx="32" cy="32" r="14" fill="url(#g1)" opacity="0.95"></circle>
+        </svg>
+      </div>
 
-<!-- 🌐 Scrollable Services Carousel -->
-<div>
-  <h2 style="margin-top:2rem;">🌟 Our Services</h2>
-  <div class="carousel" id="servicesCarousel">
-   <a href="https://altechit.netlify.app" target="_blank" style="text-decoration:none;"> <div class="card">
-      <img src="https://cdn-icons-png.flaticon.com/512/841/841364.png" />
-      <div><strong>Web Design</strong></div>
-      <p>Modern & responsive websites.</p>
-    </div></a>
-    
-    <a href="https://altechit.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
-      <img src="https://cdn-icons-png.flaticon.com/512/857/857681.png" />
-      <div><strong>Video Editing</strong></div>
-      <p>Creative promo and event videos.</p>
-    </div></a>
-    
-    <a href="https://altechit.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
-      <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" />
-      <div><strong>Graphic Design</strong></div>
-      <p>Logos, posters, and branding.</p>
-    </div></a>
+      <div style="flex:1; text-align:left;">
+        <div class="temp" id="temp">--°C</div>
+        <div class="meta" id="meta">Loading…</div>
+      </div>
+    </div>
 
-    <a href="https://edulearnit.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
-      <img src="https://cdn-icons-png.flaticon.com/512/538/538931.png" />
-      <div><strong>E-Learning platform</strong></div>
-      <p>Boost your digital skills.</p>
-    </div></a>
+    <!-- Chat bubble area -->
+    <div class="chat" id="chatArea" role="status" aria-live="polite">
+      <div class="chat-avatar" id="chatAvatar">A</div>
+      <div class="chat-body">
+        <div id="chatContent">
+          <div class="chat-bubble" id="bubble">Welcome — fetching the latest weather…</div>
+        </div>
+        <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+          <div style="flex:1;">
+            <input type="text" id="cityInput" placeholder="Enter city or let location be detected" aria-label="City input" />
+          </div>
+          <div>
+            <button class="action" onclick="searchCity()">Search</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <a href="https://electronicsg.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
-      <img src="https://cdn-icons-png.flaticon.com/512/2641/2641167.png" />
-      <div><strong>E-Commerce</strong></div>
-      <p>Easy online shopping with Altech.</p>
-    </div></a>
+    <!-- quick meta & sunrise/sunset -->
+    <div style="display:flex; gap:12px; margin-top:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+      <div style="font-size:0.95rem; color:var(--muted);">
+        <div id="dateBox">📅 —</div>
+        <div id="timeBox">🕒 —</div>
+      </div>
+      <div style="text-align:right; color:var(--muted); font-size:0.95rem;">
+        <div id="sunBox">🌅 — | 🌇 —</div>
+        <div style="margin-top:6px;">
+          <button class="action" onclick="loadTides()" id="tideBtn">🌊 Show Tides</button>
+        </div>
+      </div>
+    </div>
 
-   <a href="https://quickfix1.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
-      <img src="https://cdn-icons-png.flaticon.com/512/3638/3638416.png" />
-      <div><strong>Phone repair</strong></div>
-      <p>Quick and reliable phone repairs.</p>
-    </div></a>
+    <div class="tide-container" id="tideContainer" aria-hidden="true"></div>
 
-   <a href="https://altechit.netlify.app" target="_blank" style="text-decoration:none;"> <div class="card">
-      <img src="https://cdn-icons-png.flaticon.com/512/535/535230.png" />
-      <div><strong>ALTECH</strong></div>
-    <p>Explore tech</p>
-    </div></a>
-  </div>
-</div>
-<script>
-  // Auto-slide carousel horizontally
-  (function() {
-    const carousel = document.getElementById('servicesCarousel');
-    let cardWidth = 0;
-    let index = 0;
-    let cards = carousel.children.length;
+  </main>
 
-    function slide() {
-      // Find the first .card element to get width
-      const firstCard = carousel.querySelector('.card');
-      if (!firstCard) return;
-      cardWidth = firstCard.offsetWidth + 16; // 16px gap
+  <!-- Services carousel (kept and styled) -->
+  <section class="services" aria-label="Services">
+    <h2 style="color:var(--muted); margin:0 0 8px 0;">🌟 Our Services</h2>
+    <div class="carousel" id="servicesCarousel">
+      <a href="https://altechit.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/841/841364.png" style="width:40px; height:40px;" />
+        <div><strong>Web Design</strong></div>
+        <p style="color:var(--muted); margin:6px 0 0;">Modern & responsive websites.</p>
+      </div></a>
+      <a href="https://altechit.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/857/857681.png" style="width:40px; height:40px;" />
+        <div><strong>Video Editing</strong></div>
+        <p style="color:var(--muted); margin:6px 0 0;">Creative promo and event videos.</p>
+      </div></a>
+      <a href="https://altechit.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" style="width:40px; height:40px;" />
+        <div><strong>Graphic Design</strong></div>
+        <p style="color:var(--muted); margin:6px 0 0;">Logos, posters, and branding.</p>
+      </div></a>
+      <a href="https://edulearnit.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/538/538931.png" style="width:40px; height:40px;" />
+        <div><strong>E-Learning</strong></div>
+        <p style="color:var(--muted); margin:6px 0 0;">Boost your digital skills.</p>
+      </div></a>
+      <a href="https://electronicsg.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/2641/2641167.png" style="width:40px; height:40px;" />
+        <div><strong>E-Commerce</strong></div>
+        <p style="color:var(--muted); margin:6px 0 0;">Easy online shopping with Altech.</p>
+      </div></a>
+      <a href="https://quickfix1.netlify.app" target="_blank" style="text-decoration:none;"><div class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/3638/3638416.png" style="width:40px; height:40px;" />
+        <div><strong>Phone Repair</strong></div>
+        <p style="color:var(--muted); margin:6px 0 0;">Quick and reliable repairs.</p>
+      </div></a>
+    </div>
+  </section>
 
-      index = (index + 1) % cards;
-      carousel.scrollTo({
-        left: index * cardWidth,
-        behavior: 'smooth'
+  <!-- Floating CTA -->
+  <a href="https://altech.ct.ws/" target="_blank" class="floating-btn-website" aria-label="I need a website">
+    Need a website?
+  </a>
+
+  <footer class="mainfoot">© 2025 ALTECH • Built with care.</footer>
+
+  <!-- ---------- Scripts: Weather, UI & Interactions ---------- -->
+  <script>
+    /* ============== API KEYS (kept from your code) ============== */
+    const weatherApiKey = "f460fa92632f4124a70100437252306";
+    const worldTidesKey = "3337cf82-4e19-490e-b08c-b2b63528553e";
+
+    /* state */
+    let lastWeatherData = null;
+    let lastCoords = null;
+    let liveClockId = null;
+
+    /* DOM refs */
+    const tempEl = document.getElementById('temp');
+    const metaEl = document.getElementById('meta');
+    const bubbleEl = document.getElementById('bubble');
+    const dateBox = document.getElementById('dateBox');
+    const timeBox = document.getElementById('timeBox');
+    const sunBox = document.getElementById('sunBox');
+    const tideContainer = document.getElementById('tideContainer');
+    const weatherIcon = document.getElementById('weatherIcon');
+
+    /* ---------- helper: message generator ---------- */
+    function getWeatherMessage(temp, condition, locality){
+      const cond = (condition || '').toLowerCase();
+      const now = new Date();
+      const hour = now.getHours();
+      const greeting = hour < 5 ? 'Late night' : hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+      // personalization
+      const cityPart = locality ? ` ${locality}` : '';
+
+      if (temp !== null && !isNaN(temp)) {
+        if (temp <= 5) return `${greeting},${cityPart} — It's freezing 🥶 Bundle up and keep warm.`;
+        if (temp <= 12) return `${greeting},${cityPart} — Chilly out there. A jacket would be nice. ❄️`;
+        if (temp <= 18) return `${greeting},${cityPart} — Cool day. Light layers recommended.`;
+        if (temp <= 26) {
+          if (cond.includes('rain')) return `${greeting},${cityPart} — Pleasant but wet. Carry an umbrella ☔`;
+          return `${greeting},${cityPart} — Lovely weather — perfect for a short walk. 🌤️`;
+        }
+        if (temp > 26) return `${greeting},${cityPart} — Hot day! Stay hydrated and avoid direct sun ☀️💧`;
+      }
+
+      // fallback by condition
+      if (cond.includes('rain')) return `${greeting},${cityPart} — Rain detected. Don't forget your umbrella.`;
+      if (cond.includes('snow')) return `${greeting},${cityPart} — Snowy conditions. Stay safe. ❄️`;
+      if (cond.includes('cloud')) return `${greeting},${cityPart} — Cloudy skies — cozy vibes.`;
+      return `${greeting},${cityPart} — Here's your weather update.`;
+    }
+
+    /* ---------- typing + display utility ---------- */
+    function showTypingThenMessage(message, avatarText = 'A') {
+      // clear current bubble first
+      bubbleEl.innerHTML = '';
+      document.getElementById('chatAvatar').innerText = avatarText;
+      // create typing element
+      const typing = document.createElement('div');
+      typing.className = 'typing';
+      typing.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+      bubbleEl.appendChild(typing);
+      // after a short delay, show typed message (simulate typing)
+      const baseDelay = Math.min(1600, Math.max(700, message.length * 28));
+      setTimeout(() => {
+        // animate reveal letter by letter
+        bubbleEl.innerHTML = '';
+        let i = 0;
+        const span = document.createElement('span');
+        bubbleEl.appendChild(span);
+        const timer = setInterval(() => {
+          span.textContent += message[i++];
+          if (i >= message.length) {
+            clearInterval(timer);
+          }
+        }, 18);
+      }, baseDelay);
+    }
+
+    /* ---------- icon generators (simple) ---------- */
+    function setIconByCondition(conditionText, tempC) {
+      const cond = (conditionText || '').toLowerCase();
+      // default sun
+      const sun = `<circle cx="32" cy="32" r="12" fill="#fff" opacity="0.98"></circle>`;
+      const cloud = `<path d="M20 40c-6 0-10-5-10-9 0-4 3-8 9-8 0-6 6-10 13-10 6 0 12 3 14 8 6 0 10 5 10 9 0 4-3 8-9 8H20z" fill="#fff" opacity="0.9" />`;
+      const rain = `<path d="M20 40c-6 0-10-5-10-9 0-4 3-8 9-8 0-6 6-10 13-10 6 0 12 3 14 8 6 0 10 5 10 9 0 4-3 8-9 8H20z" fill="#fff" opacity="0.85" /><g><path d="M28 46l2 6M36 46l2 6M44 46l2 6" stroke="#bfeeff" stroke-linecap="round" stroke-width="2"/></g>`;
+      const snow = `<path d="M20 38c-6 0-10-5-10-9 0-4 3-8 9-8 0-6 6-10 13-10 6 0 12 3 14 8 6 0 10 5 10 9 0 4-3 8-9 8H20z" fill="#fff" opacity="0.85" /><g stroke="#fff" stroke-width="1.6"><path d="M28 46l4-4M32 46l-4-4" /><path d="M36 46l4-4M40 46l-4-4" /></g>`;
+      // choose
+      let svg = sun;
+      if (cond.includes('rain') || cond.includes('showers')) svg = rain;
+      else if (cond.includes('snow')) svg = snow;
+      else if (cond.includes('cloud') || cond.includes('overcast')) svg = cloud;
+      // small glow based on temp
+      const glow = tempC >= 28 ? '#ffb86b' : tempC <= 8 ? '#8ad1ff' : '#d8f5ff';
+      weatherIcon.innerHTML = `<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs><filter id="f1" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/></filter></defs>
+        <rect rx="12" width="100%" height="100%" fill="transparent"/>
+        <g filter="url(#f1)" opacity="0.55">${svg}</g>
+        <g>${svg}</g>
+      </svg>`;
+    }
+
+    /* ---------- date/time live ---------- */
+    function startLiveClock(timeZone) {
+      if (liveClockId) clearInterval(liveClockId);
+      function update() {
+        const now = new Date();
+        const tz = timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', timeZone: tz });
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: tz });
+        dateBox.textContent = `📅 ${dateStr}`;
+        timeBox.textContent = `🕒 ${timeStr}`;
+      }
+      update();
+      liveClockId = setInterval(update, 1000);
+    }
+
+    /* ---------- display weather ---------- */
+    function displayWeather(data, tides = [], showTides = false) {
+      if (!data || !data.current) {
+        tempEl.textContent = '--°C';
+        metaEl.textContent = 'No data';
+        bubbleEl.textContent = 'Unable to fetch weather.';
+        return;
+      }
+
+      const loc = data.location;
+      const cond = data.current.condition.text;
+      const tempC = Math.round(data.current.temp_c);
+      const astro = data.forecast && data.forecast.forecastday ? data.forecast.forecastday[0].astro : {sunrise:'—', sunset:'—'};
+
+      tempEl.textContent = `${tempC}°C`;
+      metaEl.textContent = `${cond} • ${loc.name}, ${loc.country}`;
+
+      setIconByCondition(cond, tempC);
+      startLiveClock(loc.tz_id);
+      document.getElementById('sunBox').textContent = `🌅 ${astro.sunrise} | 🌇 ${astro.sunset}`;
+
+      // message
+      const message = getWeatherMessage(tempC, cond, loc.name);
+      showTypingThenMessage(message, loc.name ? loc.name.charAt(0).toUpperCase() : 'A');
+
+      // tides
+      if (showTides && tides && tides.length) {
+        renderTides(tides);
+      } else {
+        tideContainer.innerHTML = '';
+      }
+    }
+
+    /* ---------- tide renderer ---------- */
+    function renderTides(tides) {
+      tideContainer.innerHTML = '';
+      tides.forEach(t => {
+        const date = new Date(t.dt || t.date || t.time || t.timestamp);
+        const time = isNaN(date.getTime()) ? (t.time || t.date) : date.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+        const type = (t.type || t.tide || t.phase || '').toString();
+        const el = document.createElement('div');
+        el.className = 'tide-card';
+        el.innerHTML = `<img src="${t.type === 'High' ? 'https://cdn-icons-png.flaticon.com/512/4149/4149640.png' : 'https://cdn-icons-png.flaticon.com/512/4149/4149635.png'}" width="36" style="margin-bottom:6px;" />
+                        <div style="font-weight:700">${type || (t.type||'Tide')}</div>
+                        <div style="color:var(--muted)">${time}</div>`;
+        tideContainer.appendChild(el);
       });
     }
 
-    // Reset scroll if user scrolls manually
-    carousel.addEventListener('scroll', () => {
-      const firstCard = carousel.querySelector('.card');
-      if (!firstCard) return;
-      cardWidth = firstCard.offsetWidth + 16;
-      index = Math.round(carousel.scrollLeft / cardWidth);
-    });
+    /* ---------- fetch tides ---------- */
+    async function getTides(lat, lon) {
+      const today = new Date().toISOString().split('T')[0];
+      const url = `https://www.worldtides.info/api/v3?extremes&lat=${lat}&lon=${lon}&date=${today}&key=${worldTidesKey}`;
+      try {
+        const res = await fetch(url);
+        const json = await res.json();
+        return json.extremes || [];
+      } catch (err) {
+        console.warn('tide fetch failed', err);
+        return [];
+      }
+    }
 
-    setInterval(slide, 2500);
-  })();
-</script>
-
-<script>
-const weatherApiKey = "f460fa92632f4124a70100437252306";
-const worldTidesKey = "3337cf82-4e19-490e-b08c-b2b63528553e";
-
-let lastWeatherData = null;
-let lastCoords = null;
-
-function displayWeather(data, tides = [], showTides = false) {
-  const loc = data.location;
-  const condition = data.current.condition;
-  const astro = data.forecast.forecastday[0].astro;
-
-  let offset = data.location.tz_id;
-let dateStr = new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
-
-let liveClockId = setInterval(() => {
-  let now = new Date();
-  let options = { timeZone: offset, hour: '2-digit', minute: '2-digit', second: '2-digit' };
-  let liveTime = now.toLocaleTimeString([], options);
-  const timeBox = document.getElementById("live-time");
-  if (timeBox) timeBox.innerText = `🕒 ${liveTime}`;
-}, 1000);
-
-
-  let html = `
-    <img src="https:${condition.icon}" style="width:80px;" />
-    <h2>${Math.round(data.current.temp_c)}°C</h2>
-    <div>${condition.text}</div>
-    <div>${loc.name}, ${loc.country}</div>
-    <div>📅 ${dateStr} | <span id="live-time">🕒 Loading...</span></div>
-    <div>🌅 Sunrise: ${astro.sunrise} | 🌇 Sunset: ${astro.sunset}</div>
-  `;
-
-  if (showTides && tides.length > 0) {
-    html += `<h3>🌊 Tide Times</h3><div>`;
-    tides.forEach(t => {
-      const tTime = new Date(t.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const icon = t.type === "High"
-        ? "https://cdn-icons-png.flaticon.com/512/4149/4149640.png"
-        : "https://cdn-icons-png.flaticon.com/512/4149/4149635.png";
-      html += `
-        <div class="tide-card">
-          <img src="${icon}" alt="${t.type}" />
-          <div><strong>${t.type} Tide</strong></div>
-          <div>${tTime}</div>
-        </div>`;
-    });
-    html += `</div>`;
-  } else if (!showTides) {
-    html += `<button onclick="loadTides()">🌊 Show Tides</button>`;
-  } else {
-    html += `<p>No tide data available for this location.</p>`;
-  }
-
-  document.getElementById("weatherApp").innerHTML = html;
-}
-
-async function getTides(lat, lon) {
-  const today = new Date().toISOString().split('T')[0];
-  const url = `https://www.worldtides.info/api/v3?extremes&lat=${lat}&lon=${lon}&date=${today}&key=${worldTidesKey}`;
-  try {
-    const res = await fetch(url);
-    const json = await res.json();
-    return json.extremes || [];
-  } catch {
-    return [];
-  }
-}
-
-function searchCity() {
-  const city = document.getElementById("cityInput").value.trim();
-  if (!city) return;
-  document.getElementById("weatherApp").innerHTML = `<div class="loading">Fetching weather for ${city}...</div>`;
-  fetch(`https://api.weatherapi.com/v1/forecast.json?key=${weatherApiKey}&q=${city}&days=1`)
-    .then(res => res.json())
-    .then(data => {
-      lastWeatherData = data;
-      lastCoords = data.location;
-      displayWeather(data);
-    })
-    .catch(() => {
-      document.getElementById("weatherApp").innerHTML = `<div class="loading">❌ Failed to fetch weather.</div>`;
-    });
-}
-
-function loadTides() {
-  if (!lastCoords || !lastWeatherData) return;
-  document.getElementById("weatherApp").innerHTML += `<div class="loading">Loading tide data...</div>`;
-  getTides(lastCoords.lat, lastCoords.lon)
-    .then(tides => {
-      displayWeather(lastWeatherData, tides, true);
-    });
-}
-
-function getCurrentWeather() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(pos => {
-      const { latitude, longitude } = pos.coords;
-      fetch(`https://api.weatherapi.com/v1/forecast.json?key=${weatherApiKey}&q=${latitude},${longitude}&days=1`)
-        .then(res => res.json())
+    /* ---------- search & geolocation ---------- */
+    function searchCity() {
+      const city = document.getElementById("cityInput").value.trim();
+      if (!city) return;
+      bubbleEl.textContent = `Looking for ${city}…`;
+      fetch(`https://api.weatherapi.com/v1/forecast.json?key=${weatherApiKey}&q=${encodeURIComponent(city)}&days=1`)
+        .then(r => r.json())
         .then(data => {
           lastWeatherData = data;
-          lastCoords = data.location;
+          lastCoords = { lat: data.location.lat, lon: data.location.lon, name: data.location.name, tz: data.location.tz_id };
           displayWeather(data);
+        }).catch(e => {
+          console.error(e);
+          bubbleEl.textContent = 'Failed to fetch weather for that city.';
         });
-    }, () => {
-      document.getElementById("weatherApp").innerHTML = `<div class="loading">Location access denied.</div>`;
+    }
+
+    function getCurrentWeather() {
+      if (navigator.geolocation) {
+        bubbleEl.textContent = 'Detecting location…';
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+          const { latitude, longitude } = pos.coords;
+          try {
+            const res = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${weatherApiKey}&q=${latitude},${longitude}&days=1`);
+            const data = await res.json();
+            lastWeatherData = data;
+            lastCoords = { lat: data.location.lat, lon: data.location.lon, name: data.location.name, tz: data.location.tz_id };
+            displayWeather(data);
+          } catch (err) {
+            console.error(err);
+            bubbleEl.textContent = 'Could not fetch weather for your location.';
+          }
+        }, (err) => {
+          console.warn(err);
+          bubbleEl.textContent = 'Location access denied. Try searching a city.';
+        }, { enableHighAccuracy: false, timeout: 8000, maximumAge: 60_000 });
+      } else {
+        bubbleEl.textContent = 'Geolocation not supported.';
+      }
+    }
+
+    /* ---------- load tides button ---------- */
+    function loadTides() {
+      if (!lastCoords || !lastWeatherData) {
+        bubbleEl.textContent = 'No location yet. Allow location or search a city.';
+        return;
+      }
+      bubbleEl.textContent = 'Loading tide events…';
+      getTides(lastCoords.lat, lastCoords.lon).then(tides => {
+        if (tides && tides.length) {
+          renderTides(tides);
+          bubbleEl.textContent = 'Tide events updated below.';
+        } else {
+          bubbleEl.textContent = 'No tide data available for this location.';
+        }
+      });
+    }
+
+    /* ---------- initial & refresh ---------- */
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      if (lastCoords) {
+        bubbleEl.textContent = 'Refreshing weather…';
+        fetch(`https://api.weatherapi.com/v1/forecast.json?key=${weatherApiKey}&q=${lastCoords.lat},${lastCoords.lon}&days=1`)
+          .then(r => r.json()).then(data => { lastWeatherData = data; displayWeather(data); });
+      } else {
+        getCurrentWeather();
+      }
     });
-  } else {
-    document.getElementById("weatherApp").innerHTML = `<div class="loading">Geolocation not supported.</div>`;
-  }
-}
 
-// Initialize
-getCurrentWeather();
-</script>
-<!-- Animated Floating Button -->
-<style>
-.floating-btn-website {
-  position: fixed;
-  bottom: 30px;
-  right: 20px;
-  z-index: 9999;
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(6px);
-  color: #fff;
-  padding: 10px 18px;
-  border-radius: 999px;
-  box-shadow: 0 4px 12px rgba(56,189,248,0.18);
-  font-size: 0.95rem;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  animation: floatBtnPulse 1.5s infinite alternate;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.floating-btn-website:hover {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 12px 32px rgba(54, 186, 190, 0.35);
-  background: linear-gradient(90deg, #67767c 0%, #96b0e9 100%);
-}
-@keyframes floatBtnPulse {
-  0% { box-shadow: 0 8px 24px rgba(56,189,248,0.25); }
-  100% { box-shadow: 0 16px 32px rgba(56,189,248,0.35); }
-}
-.floating-btn-website .fa-globe {
-  font-size: 1.3em;
-}
-</style>
-<a href="https://altech.ct.ws/" target="_blank" style="text-decoration:none;" class="floating-btn-website" aria-label="I need a website">
-  <i class="fa fa-globe"></i>
-  Need a website?
-</a>
+    /* ---------- visibility / focus: simulate "unlock" ---------- */
+    function onUserReturn() {
+      // update message when user opens/returns
+      if (!lastWeatherData) {
+        getCurrentWeather();
+        return;
+      }
+      const temp = Math.round(lastWeatherData.current.temp_c);
+      const cond = lastWeatherData.current.condition.text;
+      const locName = lastWeatherData.location.name;
+      const msg = getWeatherMessage(temp, cond, locName);
+      showTypingThenMessage(msg, locName ? locName.charAt(0).toUpperCase() : 'A');
+      // optionally refresh weather quietly (conservative)
+      // fetch new data in background (but throttle to avoid too many calls)
+      if (Math.random() < 0.33) { // light throttle so not always
+        fetch(`https://api.weatherapi.com/v1/forecast.json?key=${weatherApiKey}&q=${lastCoords ? lastCoords.lat+','+lastCoords.lon : locName}&days=1`)
+          .then(r=>r.json()).then(d=>{ lastWeatherData=d; displayWeather(d); }).catch(()=>{});
+      }
+    }
 
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') onUserReturn();
+    });
+    window.addEventListener('focus', onUserReturn);
+
+    /* ---------- theme toggle ---------- */
+    document.getElementById('themeToggle').addEventListener('change', (e) => {
+      if (e.target.checked) {
+        document.documentElement.style.setProperty('--accent', '#2952ff');
+        document.documentElement.style.setProperty('--accent-2', '#00f5d4');
+        document.body.style.background = 'linear-gradient(135deg, #0b1220 0%, #071229 60%, #031022 100%)';
+      } else {
+        document.documentElement.style.setProperty('--accent', '#3ee7ff');
+        document.documentElement.style.setProperty('--accent-2', '#7a77ff');
+        document.body.style.background = 'radial-gradient(1200px 600px at 10% 20%, rgba(255,255,255,0.02), transparent), linear-gradient(135deg, #071226 0%, #06243b 60%, #0b1830 100%)';
+      }
+    });
+
+    /* ---------- carousel auto-slide (kept) ---------- */
+    (function(){
+      const carousel = document.getElementById('servicesCarousel');
+      let index = 0;
+      let cards = carousel.children.length;
+      function slide(){
+        const firstCard = carousel.querySelector('.card');
+        if (!firstCard) return;
+        const cardWidth = firstCard.offsetWidth + 16;
+        index = (index + 1) % cards;
+        carousel.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
+      }
+      carousel.addEventListener('scroll', () => {
+        const firstCard = carousel.querySelector('.card');
+        if (!firstCard) return;
+      });
+      setInterval(slide, 3000);
+    })();
+
+    /* ---------- initialization ---------- */
+    window.addEventListener('load', () => {
+      // small delay and then initialize
+      setTimeout(() => {
+        getCurrentWeather();
+      }, 250);
+    });
+
+    /* ---------- accessibility: keyboard search ---------- */
+    document.getElementById('cityInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') searchCity();
+    });
+
+  </script>
 </body>
-<footer style="
-  background: rgba(0, 0, 0, 0.5); 
-  color: #fff; 
-  padding: 1rem; 
-  position: fixed; 
-  left: 0; 
-  bottom: 0; 
-  width: 100%; 
-  text-align: center;
-  z-index: 1000;
-">
-  <p class="text-center py-4" style="margin:0;">&copy; 2025 ALTECH. All rights reserved.</p>
-</footer>
 </html>
