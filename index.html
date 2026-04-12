@@ -6,12 +6,14 @@
   <meta name="theme-color" content="#0b2b3b" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>ALTECH Weather • Modern Forecast</title>
+  <title>ALTECH Weather • Smart Forecast</title>
   <!-- Google Fonts + Font Awesome 6 (free) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Chart.js CDN -->
+  <!-- Chart.js CDN (open source) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Anime.js (lightweight animation library - open source) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -30,7 +32,6 @@
       overflow-x: hidden;
     }
 
-    /* Night theme */
     body.night {
       background: linear-gradient(145deg, #0a0f1c 0%, #0a1a2a 100%);
       color: #e0eaff;
@@ -45,7 +46,6 @@
       border: 1px solid rgba(72, 187, 255, 0.2);
     }
 
-    /* Main container - mobile first */
     .app-container {
       max-width: 600px;
       margin: 0 auto;
@@ -77,7 +77,6 @@
       margin-top: 4px;
     }
 
-    /* Theme toggle pill */
     .theme-pill {
       background: rgba(255,255,240,0.2);
       border-radius: 40px;
@@ -92,7 +91,7 @@
       transition: 0.2s;
     }
 
-    /* Search bar */
+    /* Search */
     .search-section {
       margin-bottom: 20px;
     }
@@ -147,7 +146,7 @@
       transform: scale(0.97);
     }
 
-    /* Weather main card */
+    /* Main Weather Card */
     .weather-card {
       background: rgba(255, 255, 255, 0.12);
       backdrop-filter: blur(16px);
@@ -163,6 +162,11 @@
     .weather-icon {
       width: 80px;
       filter: drop-shadow(0 6px 12px rgba(0,0,0,0.2));
+      animation: floatIcon 3s ease-in-out infinite;
+    }
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
     }
     .temp {
       font-size: 3.8rem;
@@ -186,18 +190,58 @@
       flex-wrap: wrap;
       margin-bottom: 16px;
     }
-    .sun-times {
+
+    /* Sunrise/Sunset Cards - Enhanced Visual Indicators */
+    .astro-container {
       display: flex;
       justify-content: center;
-      gap: 20px;
-      font-size: 0.8rem;
-      background: rgba(0,0,0,0.2);
-      padding: 8px;
-      border-radius: 50px;
+      gap: 24px;
+      margin: 16px auto;
+      padding: 12px 20px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 60px;
       width: fit-content;
-      margin: 0 auto 16px;
+      backdrop-filter: blur(4px);
     }
-    /* details grid */
+    .astro-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .astro-icon {
+      font-size: 1.8rem;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+    .astro-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.8;
+    }
+    .astro-time {
+      font-size: 1rem;
+      font-weight: 700;
+      background: rgba(255,255,255,0.15);
+      padding: 4px 12px;
+      border-radius: 40px;
+    }
+    .day-progress {
+      margin-top: 12px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 20px;
+      height: 6px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #ffb347, #ffdd77);
+      border-radius: 20px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    /* Details Grid */
     .details-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -220,7 +264,7 @@
       width: 24px;
     }
 
-    /* Forecast section */
+    /* Forecast */
     .section-title {
       font-size: 1.1rem;
       font-weight: 600;
@@ -251,31 +295,16 @@
       width: 45px;
       margin: 6px 0;
     }
-    .forecast-day {
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-    .forecast-temp {
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
 
-    /* Chart container */
+    /* Chart */
     .chart-wrapper {
       background: rgba(0,0,0,0.2);
       border-radius: 28px;
       padding: 12px;
       margin: 12px 0;
     }
-    canvas {
-      max-height: 170px;
-      width: 100%;
-    }
 
-    /* Tide cards */
-    .tide-section {
-      margin-top: 12px;
-    }
+    /* Tides */
     .tides-scroll {
       display: flex;
       gap: 12px;
@@ -289,23 +318,41 @@
       min-width: 100px;
       text-align: center;
     }
-    .tide-card img {
-      width: 32px;
-      margin-bottom: 4px;
+
+    /* UV Index Indicator (open source feature) */
+    .uv-card {
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+      border-radius: 28px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .uv-value {
+      font-size: 2rem;
+      font-weight: 800;
     }
 
-    /* Services carousel */
-    .services-section {
-      margin-top: 24px;
-      margin-bottom: 10px;
+    /* Air Quality (using free API) */
+    .aqi-card {
+      background: rgba(46, 204, 113, 0.2);
+      border-radius: 28px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(8px);
     }
+
+    /* Services */
     .services-carousel {
       display: flex;
       gap: 12px;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       padding: 8px 0 16px;
-      -webkit-overflow-scrolling: touch;
     }
     .service-card {
       background: rgba(255,255,245,0.12);
@@ -315,14 +362,6 @@
       min-width: 140px;
       text-align: center;
       scroll-snap-align: start;
-      transition: 0.2s;
-    }
-    .service-card:active {
-      transform: scale(0.97);
-    }
-    .service-card img {
-      width: 44px;
-      margin-bottom: 8px;
     }
     a.service-link {
       text-decoration: none;
@@ -345,13 +384,8 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      transition: 0.2s;
-    }
-    .floating-cta:active {
-      transform: scale(0.95);
     }
 
-    /* Footer */
     footer {
       background: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(12px);
@@ -364,7 +398,6 @@
       z-index: 999;
     }
 
-    /* Loader */
     .loader {
       display: flex;
       flex-direction: column;
@@ -382,51 +415,18 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Hide scrollbar but keep functionality */
-    .forecast-scroll::-webkit-scrollbar,
-    .services-carousel::-webkit-scrollbar,
-    .tides-scroll::-webkit-scrollbar {
-      height: 3px;
-    }
-    .forecast-scroll::-webkit-scrollbar-track,
-    .services-carousel::-webkit-scrollbar-track {
-      background: rgba(255,255,255,0.1);
-      border-radius: 10px;
-    }
-    .forecast-scroll::-webkit-scrollbar-thumb,
-    .services-carousel::-webkit-scrollbar-thumb {
-      background: #5dade2;
-      border-radius: 10px;
-    }
-
-    button {
-      cursor: pointer;
-      border: none;
-    }
-
     @media (max-width: 480px) {
-      .app-container {
-        padding: 12px 14px 20px;
-      }
-      .temp {
-        font-size: 3.2rem;
-      }
-      .detail-item {
-        font-size: 0.7rem;
-        padding: 8px 6px;
-      }
-      .forecast-card {
-        min-width: 80px;
-        padding: 10px;
-      }
+      .temp { font-size: 3.2rem; }
+      .astro-container { gap: 16px; padding: 8px 16px; }
+      .astro-time { font-size: 0.85rem; }
     }
   </style>
 </head>
 <body>
 <div class="app-container">
   <div class="header">
-    <h1><i class="fas fa-cloud-moon-rain"></i> ALTECH Weather</h1>
-    <div class="subhead">live tides • 5-day forecast • smart chart</div>
+    <h1><i class="fas fa-cloud-sun-rain"></i> ALTECH Weather</h1>
+    <div class="subhead">live tides • UV Index • Air Quality • smart chart</div>
     <div class="theme-pill" onclick="toggleTheme()">
       <i class="fas fa-sun"></i> <span id="themeLabel">Light</span> <i class="fas fa-moon"></i>
     </div>
@@ -434,37 +434,30 @@
 
   <div class="search-section">
     <div class="search-group">
-      <input type="text" id="cityInput" placeholder="Search city... e.g., Miami, Tokyo" autocomplete="off">
+      <input type="text" id="cityInput" placeholder="Search city... e.g., Gazi, Kenya" autocomplete="off">
       <button class="btn-icon" onclick="searchCity()"><i class="fas fa-search"></i></button>
     </div>
     <button class="btn-icon btn-location" onclick="getCurrentLocationWeather()"><i class="fas fa-location-dot"></i> Use my location</button>
   </div>
 
   <div id="weatherApp">
-    <div class="loader"><div class="spinner"></div><p style="margin-top:12px;">Fetching weather...</p></div>
+    <div class="loader"><div class="spinner"></div><p>Fetching weather data...</p></div>
   </div>
 
-  <!-- Services carousel -->
+  <!-- Services -->
   <div class="services-section">
     <div class="section-title"><i class="fas fa-cube"></i> ALTECH Ecosystem</div>
     <div class="services-carousel" id="servicesCarousel">
-      <a href="https://altechit.netlify.app" target="_blank" class="service-link"><div class="service-card"><img src="https://cdn-icons-png.flaticon.com/512/841/841364.png" alt="web"><strong>Web Design</strong><p style="font-size:0.7rem;">Modern sites</p></div></a>
-      <a href="https://altechit.netlify.app" target="_blank" class="service-link"><div class="service-card"><img src="https://cdn-icons-png.flaticon.com/512/857/857681.png" alt="video"><strong>Video Editing</strong><p style="font-size:0.7rem;">Creative</p></div></a>
-      <a href="https://altechit.netlify.app" target="_blank" class="service-link"><div class="service-card"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="graphic"><strong>Graphic Design</strong><p style="font-size:0.7rem;">Branding</p></div></a>
-      <a href="https://edulearnit.netlify.app" target="_blank" class="service-link"><div class="service-card"><img src="https://cdn-icons-png.flaticon.com/512/538/538931.png" alt="elearn"><strong>E-Learning</strong><p style="font-size:0.7rem;">Skills</p></div></a>
-      <a href="https://electronicsg.netlify.app" target="_blank" class="service-link"><div class="service-card"><img src="https://cdn-icons-png.flaticon.com/512/2641/2641167.png" alt="ecom"><strong>E-Commerce</strong><p style="font-size:0.7rem;">Shop</p></div></a>
-      <a href="https://quickfix1.netlify.app" target="_blank" class="service-link"><div class="service-card"><img src="https://cdn-icons-png.flaticon.com/512/3638/3638416.png" alt="repair"><strong>Phone repair</strong><p style="font-size:0.7rem;">Fast fix</p></div></a>
-      <a href="https://altechit.netlify.app" target="_blank" class="service-link"><div class="service-card"><img src="https://cdn-icons-png.flaticon.com/512/535/535230.png" alt="altech"><strong>ALTECH Hub</strong><p style="font-size:0.7rem;">Explore</p></div></a>
+      <a href="https://altechit.netlify.app" target="_blank" class="service-link"><div class="service-card"><img src="https://cdn-icons-png.flaticon.com/512/841/841364.png" width="40"><strong>Web Design</strong></div></a>
+      <a href="https://altechit.netlify.app" target="_blank" class="service-link"><div class="service-card"><img src="https://cdn-icons-png.flaticon.com/512/857/857681.png" width="40"><strong>Video Editing</strong></div></a>
+      <a href="https://altechit.netlify.app" target="_blank" class="service-link"><div class="service-card"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="40"><strong>Graphic Design</strong></div></a>
+      <a href="https://edulearnit.netlify.app" target="_blank" class="service-link"><div class="service-card"><img src="https://cdn-icons-png.flaticon.com/512/538/538931.png" width="40"><strong>E-Learning</strong></div></a>
     </div>
   </div>
 </div>
 
-<a href="https://altech.ct.ws/" target="_blank" class="floating-cta" aria-label="Need a website">
-  <i class="fas fa-code"></i> Need a website?
-</a>
-<footer>
-  <p>&copy; 2025 ALTECH — Intelligent Weather & Digital Suite</p>
-</footer>
+<a href="https://altech.ct.ws/" target="_blank" class="floating-cta"><i class="fas fa-code"></i> Need a website?</a>
+<footer><p>&copy; 2025 ALTECH — Smart Weather with UV, AQI & Tides</p></footer>
 
 <script>
   const WEATHER_API_KEY = "f460fa92632f4124a70100437252306";
@@ -475,16 +468,15 @@
   let tempChart = null;
   let clockInterval = null;
 
-  // Helper fetch functions
   async function fetchWeatherByCoords(lat, lon) {
-    const url = `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${lat},${lon}&days=5&aqi=no`;
+    const url = `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${lat},${lon}&days=5&aqi=yes`;
     const res = await fetch(url);
     if (!res.ok) throw new Error("Weather fetch failed");
     return await res.json();
   }
 
   async function fetchWeatherByCity(city) {
-    const url = `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${encodeURIComponent(city)}&days=5&aqi=no`;
+    const url = `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${encodeURIComponent(city)}&days=5&aqi=yes`;
     const res = await fetch(url);
     if (!res.ok) throw new Error("City not found");
     return await res.json();
@@ -500,60 +492,114 @@
     } catch(e) { return []; }
   }
 
-  // Render full UI
+  // Calculate day progress percentage between sunrise and sunset
+  function getDayProgress(sunriseStr, sunsetStr, timezone) {
+    try {
+      const now = new Date();
+      const formatter = new Intl.DateTimeFormat('en-US', { timeZone: timezone, hour: '2-digit', minute: '2-digit', hour12: false });
+      const nowParts = formatter.formatToParts(now);
+      let currentHour = 0, currentMinute = 0;
+      for (const part of nowParts) {
+        if (part.type === 'hour') currentHour = parseInt(part.value);
+        if (part.type === 'minute') currentMinute = parseInt(part.value);
+      }
+      const parseTime = (timeStr) => {
+        let [hour, minute] = timeStr.replace(/\s?(AM|PM)/, '').split(':');
+        let h = parseInt(hour);
+        if (timeStr.includes('PM') && h !== 12) h += 12;
+        if (timeStr.includes('AM') && h === 12) h = 0;
+        return { hour: h, minute: parseInt(minute) };
+      };
+      const sunrise = parseTime(sunriseStr);
+      const sunset = parseTime(sunsetStr);
+      const sunriseMinutes = sunrise.hour * 60 + sunrise.minute;
+      const sunsetMinutes = sunset.hour * 60 + sunset.minute;
+      const currentMinutes = currentHour * 60 + currentMinute;
+      if (currentMinutes < sunriseMinutes) return 0;
+      if (currentMinutes > sunsetMinutes) return 100;
+      const progress = ((currentMinutes - sunriseMinutes) / (sunsetMinutes - sunriseMinutes)) * 100;
+      return Math.min(100, Math.max(0, progress));
+    } catch(e) { return 50; }
+  }
+
+  // Get UV Index description
+  function getUVDescription(uv) {
+    if (uv <= 2) return { text: "Low", color: "#2ecc71" };
+    if (uv <= 5) return { text: "Moderate", color: "#f39c12" };
+    if (uv <= 7) return { text: "High", color: "#e67e22" };
+    if (uv <= 10) return { text: "Very High", color: "#e74c3c" };
+    return { text: "Extreme", color: "#c0392b" };
+  }
+
+  // Get AQI description
+  function getAQIDescription(aqi) {
+    if (aqi <= 50) return { text: "Good", icon: "fa-smile", color: "#2ecc71" };
+    if (aqi <= 100) return { text: "Moderate", icon: "fa-meh", color: "#f39c12" };
+    if (aqi <= 150) return { text: "Unhealthy for Sensitive", icon: "fa-frown", color: "#e67e22" };
+    if (aqi <= 200) return { text: "Unhealthy", icon: "fa-skull", color: "#e74c3c" };
+    return { text: "Hazardous", icon: "fa-biohazard", color: "#c0392b" };
+  }
+
   async function renderWeather(weatherObj, showTides = false, tidesData = null) {
     const loc = weatherObj.location;
     const current = weatherObj.current;
     const forecast = weatherObj.forecast.forecastday;
     const astro = forecast[0].astro;
+    const uv = current.uv || 0;
+    const aqi = current.air_quality?.["us-epa-index"] || (current.air_quality?.pm2_5 ? 2 : 1);
+    const uvInfo = getUVDescription(uv);
+    const aqiInfo = getAQIDescription(aqi * 50); // rough conversion
 
-    // Live clock with timezone
     if (clockInterval) clearInterval(clockInterval);
     const updateClock = () => {
       const now = new Date();
       const formatter = new Intl.DateTimeFormat('en-US', { timeZone: loc.tz_id, hour: '2-digit', minute: '2-digit', second: '2-digit' });
       const timeSpan = document.getElementById("liveClockSpan");
       if (timeSpan) timeSpan.innerText = formatter.format(now);
+      // update progress bar
+      const progress = getDayProgress(astro.sunrise, astro.sunset, loc.tz_id);
+      const progressBar = document.getElementById("dayProgressBar");
+      if (progressBar) progressBar.style.width = `${progress}%`;
     };
     updateClock();
     clockInterval = setInterval(updateClock, 1000);
 
-    // 5-day forecast cards
+    // Forecast cards
     let forecastHtml = `<div class="section-title"><i class="fas fa-calendar-alt"></i> 5-Day Forecast</div><div class="forecast-scroll">`;
     forecast.forEach(day => {
       const date = new Date(day.date);
       const weekday = date.toLocaleDateString('en', { weekday: 'short' });
-      forecastHtml += `
-        <div class="forecast-card">
-          <div class="forecast-day">${weekday}</div>
-          <img src="https:${day.day.condition.icon}" alt="icon">
-          <div class="forecast-temp">${Math.round(day.day.avgtemp_c)}°</div>
-          <div style="font-size:0.65rem;">${day.day.condition.text}</div>
-        </div>
-      `;
+      forecastHtml += `<div class="forecast-card"><div>${weekday}</div><img src="https:${day.day.condition.icon}"><div><strong>${Math.round(day.day.avgtemp_c)}°</strong></div></div>`;
     });
     forecastHtml += `</div>`;
 
-    // hourly chart data
+    // Hourly chart
     const hourly = forecast[0]?.hour || [];
     const chartHours = hourly.slice(0, 24).map(h => ({ hour: new Date(h.time).getHours(), temp: h.temp_c }));
     const labels = chartHours.map(h => `${h.hour}:00`);
     const temps = chartHours.map(h => h.temp);
 
+    // UV Index Card
+    const uvHtml = `<div class="uv-card" style="background: linear-gradient(135deg, ${uvInfo.color}80, ${uvInfo.color}40);"><div><i class="fas fa-sun"></i> UV Index</div><div class="uv-value">${uv}</div><div><strong>${uvInfo.text}</strong></div></div>`;
+
+    // Air Quality Card
+    const aqiHtml = `<div class="aqi-card" style="border-left: 4px solid ${aqiInfo.color};"><div><i class="fas ${aqiInfo.icon}"></i> Air Quality</div><div><strong>${aqiInfo.text}</strong></div><div>AQI: ${Math.round(aqi * 50)}</div></div>`;
+
+    // Tides
     let tideHtml = '';
     if (showTides && tidesData && tidesData.length) {
-      tideHtml = `<div class="tide-section"><div class="section-title"><i class="fas fa-water"></i> Tide Extremes</div><div class="tides-scroll">`;
+      tideHtml = `<div class="section-title"><i class="fas fa-water"></i> Tide Extremes</div><div class="tides-scroll">`;
       tidesData.slice(0, 6).forEach(t => {
         const tTime = new Date(t.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const icon = t.type === "High" ? "https://cdn-icons-png.flaticon.com/512/4149/4149640.png" : "https://cdn-icons-png.flaticon.com/512/4149/4149635.png";
-        tideHtml += `<div class="tide-card"><img src="${icon}"/><div><strong>${t.type}</strong></div><div>${tTime}</div>${t.height ? `<div>${t.height.toFixed(1)}m</div>` : ''}</div>`;
+        const icon = t.type === "High" ? "🌊" : "⬇️";
+        tideHtml += `<div class="tide-card"><div style="font-size:1.5rem;">${icon}</div><div><strong>${t.type}</strong></div><div>${tTime}</div>${t.height ? `<div>${t.height.toFixed(1)}m</div>` : ''}</div>`;
       });
-      tideHtml += `</div></div>`;
-    } else if (showTides && (!tidesData || tidesData.length === 0)) {
-      tideHtml = `<div class="tide-section"><p><i class="fas fa-info-circle"></i> No tide data for this region</p></div>`;
+      tideHtml += `</div>`;
     } else if (!showTides) {
-      tideHtml = `<button onclick="loadTidesForCurrent()" style="background:#2c7da0; border-radius:40px; padding:12px; width:100%; margin-top:12px; display:flex; justify-content:center; gap:6px;"><i class="fas fa-chart-line"></i> Show Tides</button>`;
+      tideHtml = `<button onclick="loadTidesForCurrent()" style="background:#2c7da0; border-radius:40px; padding:12px; width:100%; margin-top:12px;"><i class="fas fa-chart-line"></i> Show Tides</button>`;
     }
+
+    const dayProgress = getDayProgress(astro.sunrise, astro.sunset, loc.tz_id);
 
     const mainHtml = `
       <div class="weather-card">
@@ -565,10 +611,25 @@
             <span><i class="fas fa-map-pin"></i> ${loc.name}, ${loc.country}</span>
             <span><i class="far fa-clock"></i> <span id="liveClockSpan">--:--:--</span></span>
           </div>
-          <div class="sun-times">
-            <span><i class="fas fa-sunrise"></i> ${astro.sunrise}</span>
-            <span><i class="fas fa-sunset"></i> ${astro.sunset}</span>
+          
+          <!-- Enhanced Sunrise/Sunset with visual indicators -->
+          <div class="astro-container">
+            <div class="astro-item">
+              <div class="astro-icon"><i class="fas fa-sunrise" style="color: #ffb347;"></i></div>
+              <div class="astro-label">Sunrise</div>
+              <div class="astro-time">${astro.sunrise}</div>
+            </div>
+            <div class="astro-item">
+              <div class="astro-icon"><i class="fas fa-sunset" style="color: #ff8c42;"></i></div>
+              <div class="astro-label">Sunset</div>
+              <div class="astro-time">${astro.sunset}</div>
+            </div>
           </div>
+          <div class="day-progress">
+            <div class="progress-bar" id="dayProgressBar" style="width: ${dayProgress}%;"></div>
+          </div>
+          <div style="font-size:0.7rem; margin-top: 6px; opacity:0.7;">☀️ Day progress</div>
+          
           <div class="details-grid">
             <div class="detail-item"><i class="fas fa-tint"></i> ${current.humidity}%</div>
             <div class="detail-item"><i class="fas fa-wind"></i> ${Math.round(current.wind_kph)} km/h</div>
@@ -577,6 +638,8 @@
           </div>
         </div>
       </div>
+      ${uvHtml}
+      ${aqiHtml}
       ${forecastHtml}
       <div class="chart-wrapper">
         <canvas id="tempChartCanvas" width="400" height="160"></canvas>
@@ -592,36 +655,22 @@
       if (tempChart) tempChart.destroy();
       tempChart = new Chart(ctx, {
         type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Temperature °C',
-            data: temps,
-            borderColor: '#ffb347',
-            backgroundColor: 'rgba(255, 180, 71, 0.2)',
-            borderWidth: 2,
-            tension: 0.3,
-            fill: true,
-            pointRadius: 3,
-            pointBackgroundColor: '#ff9f4a'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          plugins: { legend: { labels: { color: '#eef', font: { size: 10 } } } },
-          scales: { y: { grid: { color: 'rgba(255,255,255,0.15)' }, ticks: { color: '#ddd' } },
-                    x: { ticks: { color: '#ccc', maxRotation: 45, autoSkip: true, font: { size: 9 } } } }
-        }
+        data: { labels: labels, datasets: [{ label: 'Temperature °C', data: temps, borderColor: '#ffb347', backgroundColor: 'rgba(255, 180, 71, 0.2)', borderWidth: 2, tension: 0.3, fill: true, pointRadius: 3 }] },
+        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#eef', font: { size: 10 } } } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.15)' }, ticks: { color: '#ddd' } }, x: { ticks: { color: '#ccc', maxRotation: 45, autoSkip: true } } } }
       });
     }
+
+    // Anime.js animation for progress bar
+    anime({
+      targets: '#dayProgressBar',
+      width: `${dayProgress}%`,
+      duration: 800,
+      easing: 'easeOutQuad'
+    });
   }
 
   async function loadTidesForCurrent() {
-    if (!currentCoords || !currentWeatherData) {
-      alert("Please search a city first.");
-      return;
-    }
+    if (!currentCoords || !currentWeatherData) { alert("Search a city first."); return; }
     const weatherDiv = document.getElementById("weatherApp");
     weatherDiv.innerHTML += `<div class="loader" style="padding:20px;"><div class="spinner"></div><p>Loading tides...</p></div>`;
     const tides = await getTides(currentCoords.lat, currentCoords.lon);
@@ -635,7 +684,7 @@
       currentCoords = weather.location;
       await renderWeather(weather, false, null);
     } catch (err) {
-      document.getElementById("weatherApp").innerHTML = `<div class="weather-card" style="background:rgba(255,70,70,0.2);"><i class="fas fa-exclamation-triangle"></i> ${err.message || "Failed to load"}</div>`;
+      document.getElementById("weatherApp").innerHTML = `<div class="weather-card" style="background:rgba(255,70,70,0.2);"><i class="fas fa-exclamation-triangle"></i> ${err.message}</div>`;
     }
   }
 
@@ -647,48 +696,29 @@
   }
 
   function getCurrentLocationWeather() {
-    if (!navigator.geolocation) {
-      alert("Geolocation not supported");
-      return;
-    }
+    if (!navigator.geolocation) { alert("Geolocation not supported"); return; }
     document.getElementById("weatherApp").innerHTML = `<div class="loader"><div class="spinner"></div><p>Getting your location...</p></div>`;
     navigator.geolocation.getCurrentPosition(async (pos) => {
-      const { latitude, longitude } = pos.coords;
-      updateWeatherAndRender(fetchWeatherByCoords(latitude, longitude));
-    }, () => {
-      document.getElementById("weatherApp").innerHTML = `<div class="weather-card">⚠️ Location denied. Please search manually.</div>`;
-    });
+      updateWeatherAndRender(fetchWeatherByCoords(pos.coords.latitude, pos.coords.longitude));
+    }, () => { document.getElementById("weatherApp").innerHTML = `<div class="weather-card">⚠️ Location denied.</div>`; });
   }
 
   function toggleTheme() {
     document.body.classList.toggle('night');
-    const isNight = document.body.classList.contains('night');
-    document.getElementById("themeLabel").innerText = isNight ? "Night" : "Light";
+    document.getElementById("themeLabel").innerText = document.body.classList.contains('night') ? "Night" : "Light";
   }
 
-  // Auto-slide services carousel (gentle for mobile)
+  // Auto carousel
   (function initCarousel() {
     const carousel = document.getElementById('servicesCarousel');
     if (!carousel) return;
     let interval;
-    const startAuto = () => {
-      if (interval) clearInterval(interval);
-      interval = setInterval(() => {
-        if (!carousel) return;
-        const maxScroll = carousel.scrollWidth - carousel.clientWidth;
-        let newScroll = carousel.scrollLeft + 180;
-        if (newScroll >= maxScroll) newScroll = 0;
-        carousel.scrollTo({ left: newScroll, behavior: 'smooth' });
-      }, 3500);
-    };
+    const startAuto = () => { if (interval) clearInterval(interval); interval = setInterval(() => { if (carousel) { let newScroll = carousel.scrollLeft + 160; if (newScroll >= carousel.scrollWidth - carousel.clientWidth) newScroll = 0; carousel.scrollTo({ left: newScroll, behavior: 'smooth' }); } }, 4000); };
     startAuto();
     carousel.addEventListener('touchstart', () => clearInterval(interval));
     carousel.addEventListener('touchend', startAuto);
-    carousel.addEventListener('mouseenter', () => clearInterval(interval));
-    carousel.addEventListener('mouseleave', startAuto);
   })();
 
-  // initial load
   getCurrentLocationWeather();
 </script>
 </body>
