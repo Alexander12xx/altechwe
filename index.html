@@ -11,7 +11,7 @@
   <meta name="description" content="Professional weather forecasting - by ALTECH Software Developers">
   
   <!-- PWA Manifest -->
-  <link rel="manifest" href="data:application/manifest+json,{name:'ALTECH Weather Pro',short_name:'ALTECH',icons:[{src:'logo.jpg',sizes:'192x192',type:'image/jpeg'}],theme_color:'#0a1628',background_color:'#0a1628',display:'standalone',start_url:'/'}">
+  <link rel="manifest" href="data:application/manifest+json,{name:'ALTECH Weather Pro',short_name:'ALTECH',icons:[{src:'logo.jpg',sizes:'192x192',type:'image/jpeg'},{src:'logo.jpg',sizes:'512x512',type:'image/jpeg'}],theme_color:'#0a1628',background_color:'#0a1628',display:'standalone',start_url:'/',scope:'/'}">
   
   <title>ALTECH Weather Pro</title>
   
@@ -49,7 +49,7 @@
       background: var(--primary);
       color: var(--text-primary);
       min-height: 100vh;
-      padding-bottom: 100px;
+      padding-bottom: 120px;
       position: relative;
       overflow-x: hidden;
     }
@@ -85,7 +85,7 @@
                   linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
     }
 
-    /* Custom Toggle Switch - Exactly as requested */
+    /* Custom Toggle Switch */
     .switch {
       font-size: 17px;
       position: relative;
@@ -176,7 +176,7 @@
       transform: translateX(30px);
     }
 
-    /* Planet Loader - Exactly as requested */
+    /* Planet Loader */
     .planet-loader-wrapper {
       display: flex;
       justify-content: center;
@@ -277,7 +277,7 @@
       z-index: 1;
     }
 
-    /* Header with visible ALTECH */
+    /* Header */
     .header-pro {
       display: flex;
       align-items: center;
@@ -335,6 +335,29 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    .install-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--header-gradient);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+      transition: all 0.2s;
+    }
+
+    .install-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .install-btn.hidden {
+      display: none;
     }
 
     /* Search */
@@ -402,39 +425,45 @@
       transform: translateY(-2px);
     }
 
-    /* PWA Install Prompt - Enhanced */
-    .pwa-install-prompt {
+    /* PWA Install Banner */
+    .pwa-install-banner {
       background: linear-gradient(135deg, #3b82f6, #8b5cf6);
       border-radius: 20px;
-      padding: 20px 24px;
+      padding: 16px 20px;
       margin: 20px 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
       box-shadow: 0 20px 40px rgba(59, 130, 246, 0.4);
-      cursor: pointer;
       border: 2px solid rgba(255, 255, 255, 0.2);
-      animation: pulseGlow 2s infinite;
+      animation: slideDown 0.5s ease;
     }
 
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 20px 40px rgba(59, 130, 246, 0.4); }
-      50% { box-shadow: 0 20px 40px rgba(139, 92, 246, 0.6); }
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .pwa-install-prompt.hidden {
+    .pwa-install-banner.hidden {
       display: none;
     }
 
-    .pwa-content {
+    .pwa-banner-content {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
+      flex: 1;
     }
 
     .pwa-icon {
-      width: 50px;
-      height: 50px;
+      width: 48px;
+      height: 48px;
       background: white;
       border-radius: 12px;
       display: flex;
@@ -444,24 +473,38 @@
       color: #3b82f6;
     }
 
-    .pwa-text h3 {
-      font-size: 1.2rem;
-      margin-bottom: 4px;
+    .pwa-text h4 {
+      font-size: 1rem;
+      margin-bottom: 2px;
     }
 
     .pwa-text p {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       opacity: 0.9;
     }
 
-    .pwa-arrow {
-      font-size: 24px;
-      animation: slideRight 1.5s infinite;
+    .pwa-actions {
+      display: flex;
+      gap: 8px;
     }
 
-    @keyframes slideRight {
-      0%, 100% { transform: translateX(0); }
-      50% { transform: translateX(5px); }
+    .pwa-btn {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .pwa-btn-primary {
+      background: white;
+      color: #3b82f6;
+    }
+
+    .pwa-btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
     }
 
     /* Weather Cards */
@@ -513,6 +556,70 @@
       width: 100px;
       height: 100px;
       filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+    }
+
+    /* Tides Section */
+    .tides-section {
+      margin: 20px 0;
+    }
+
+    .tides-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .show-tides-btn {
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 20px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3);
+    }
+
+    .show-tides-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .tides-container {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 8px 0;
+    }
+
+    .tide-card {
+      min-width: 120px;
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1));
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 16px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+    }
+
+    .tide-type {
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .tide-time {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .tide-height {
+      font-size: 0.9rem;
+      opacity: 0.8;
     }
 
     /* Metrics Grid */
@@ -632,7 +739,96 @@
       font-weight: 700;
     }
 
-    /* Footer - Professional & Enhanced */
+    /* Rotating Ad Card */
+    .ad-carousel {
+      margin: 24px 0;
+      position: relative;
+      height: 140px;
+    }
+
+    .ad-card {
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      border-radius: 24px;
+      padding: 20px;
+      position: absolute;
+      width: 100%;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .ad-card.active {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    .ad-content {
+      flex: 1;
+    }
+
+    .ad-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: white;
+    }
+
+    .ad-description {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .ad-link {
+      background: white;
+      color: var(--accent);
+      padding: 8px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-block;
+      transition: all 0.2s;
+    }
+
+    .ad-link:hover {
+      transform: scale(1.05);
+    }
+
+    .ad-icon {
+      font-size: 3rem;
+      color: white;
+      opacity: 0.3;
+    }
+
+    .ad-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .ad-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .ad-dot.active {
+      background: var(--accent);
+      width: 24px;
+      border-radius: 12px;
+    }
+
+    /* Footer - Upgraded */
     .footer-pro {
       position: fixed;
       bottom: 0;
@@ -641,7 +837,7 @@
       background: var(--footer-bg);
       backdrop-filter: blur(30px);
       border-top: 1px solid var(--glass-border);
-      padding: 20px 20px;
+      padding: 16px 20px;
       z-index: 100;
       box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
     }
@@ -654,9 +850,13 @@
     .footer-content {
       max-width: 560px;
       margin: 0 auto;
+    }
+
+    .footer-main {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: 12px;
     }
 
     .footer-brand {
@@ -666,36 +866,36 @@
     }
 
     .footer-logo {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
+      width: 40px;
+      height: 40px;
       background: var(--header-gradient);
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      font-weight: bold;
+      font-size: 1.2rem;
     }
 
-    .footer-brand-text h4 {
+    .footer-brand-info h4 {
       font-size: 1rem;
       font-weight: 700;
       color: var(--text-primary);
+      margin-bottom: 2px;
     }
 
-    .footer-brand-text p {
+    .footer-brand-info p {
       font-size: 0.7rem;
       opacity: 0.6;
       color: var(--text-secondary);
     }
 
-    .footer-links {
+    .footer-nav {
       display: flex;
-      gap: 24px;
-      align-items: center;
+      gap: 20px;
     }
 
-    .footer-links a {
+    .footer-nav a {
       color: var(--text-secondary);
       text-decoration: none;
       font-size: 0.85rem;
@@ -703,8 +903,21 @@
       transition: color 0.2s;
     }
 
-    .footer-links a:hover {
+    .footer-nav a:hover {
       color: var(--accent);
+    }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .footer-copyright {
+      font-size: 0.75rem;
+      opacity: 0.5;
     }
 
     .footer-social {
@@ -713,15 +926,16 @@
     }
 
     .footer-social a {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
       background: rgba(59, 130, 246, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--text-primary);
       transition: all 0.2s;
+      text-decoration: none;
     }
 
     .footer-social a:hover {
@@ -730,34 +944,9 @@
       transform: translateY(-2px);
     }
 
-    /* Ecosystem */
-    .ecosystem-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin: 20px 0;
-    }
-
-    .eco-card {
-      background: var(--glass);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      padding: 20px;
-      text-decoration: none;
-      color: var(--text-primary);
-      text-align: center;
-      transition: all 0.2s;
-    }
-
-    .eco-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--accent);
-    }
-
-    .eco-card i {
-      font-size: 2rem;
-      margin-bottom: 10px;
+    .footer-version {
+      font-size: 0.75rem;
+      opacity: 0.5;
     }
 
     /* Floating Action Button */
@@ -788,14 +977,14 @@
     /* Responsive */
     @media (max-width: 480px) {
       .temp-now { font-size: 3.5rem; }
-      .footer-links { gap: 16px; }
-      .footer-social { display: none; }
+      .footer-nav { gap: 12px; }
+      .footer-nav a { font-size: 0.75rem; }
     }
   </style>
 </head>
 <body>
   <div class="app-wrapper">
-    <!-- Header with ALTECH clearly visible -->
+    <!-- Header -->
     <div class="header-pro">
       <div class="logo-section">
         <div class="logo-frame">
@@ -807,7 +996,9 @@
         </div>
       </div>
       <div class="header-actions">
-        <!-- Custom Toggle Switch -->
+        <button class="install-btn hidden" id="installBtn" onclick="installPWA()">
+          <i class="fas fa-download"></i>
+        </button>
         <label class="switch">
           <span class="sun">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -839,23 +1030,24 @@
       </button>
     </div>
 
-    <!-- Enhanced PWA Install Prompt -->
-    <div class="pwa-install-prompt hidden" id="pwaPrompt" onclick="installPWA()">
-      <div class="pwa-content">
+    <!-- PWA Install Banner -->
+    <div class="pwa-install-banner hidden" id="pwaBanner">
+      <div class="pwa-banner-content">
         <div class="pwa-icon">
           <i class="fas fa-cloud-sun"></i>
         </div>
         <div class="pwa-text">
-          <h3>Install ALTECH Weather</h3>
-          <p>Get quick access to weather forecasts</p>
+          <h4>Install ALTECH Weather</h4>
+          <p>Add to home screen for quick access</p>
         </div>
       </div>
-      <div class="pwa-arrow">
-        <i class="fas fa-chevron-right"></i>
+      <div class="pwa-actions">
+        <button class="pwa-btn pwa-btn-primary" onclick="installPWA()">Install</button>
+        <button class="pwa-btn pwa-btn-secondary" onclick="dismissBanner()">Later</button>
       </div>
     </div>
 
-    <!-- Dynamic Content with Planet Loader -->
+    <!-- Dynamic Content -->
     <div id="appContent">
       <div class="planet-loader-wrapper">
         <div class="planet"></div>
@@ -863,53 +1055,84 @@
       <p style="text-align:center; opacity:0.8; margin-top: 20px;">Fetching your location & weather data...</p>
     </div>
 
-    <!-- ALTECH Ecosystem -->
-    <div style="margin: 30px 0 20px;">
-      <h3 style="margin-bottom: 16px; font-weight: 600;">
-        <i class="fas fa-cubes" style="margin-right: 8px; color: var(--accent);"></i>
-        ALTECH Ecosystem
-      </h3>
-      <div class="ecosystem-grid">
-        <a href="https://altechit.netlify.app" target="_blank" class="eco-card">
+    <!-- Rotating Ad Carousel (ALTECH Ecosystem) -->
+    <div class="ad-carousel" id="adCarousel">
+      <div class="ad-card active" data-ad="1">
+        <div class="ad-content">
+          <div class="ad-title">Web Design Services</div>
+          <div class="ad-description">Professional websites starting at $499</div>
+          <a href="https://altechit.netlify.app" target="_blank" class="ad-link">Learn More →</a>
+        </div>
+        <div class="ad-icon">
           <i class="fas fa-code"></i>
-          <strong>Web Design</strong>
-          <div style="font-size:0.7rem; opacity:0.7;">altechit</div>
-        </a>
-        <a href="https://altechit.netlify.app" target="_blank" class="eco-card">
+        </div>
+      </div>
+      <div class="ad-card" data-ad="2">
+        <div class="ad-content">
+          <div class="ad-title">Video Editing Pro</div>
+          <div class="ad-description">Professional video editing services</div>
+          <a href="https://altechit.netlify.app" target="_blank" class="ad-link">Get Started →</a>
+        </div>
+        <div class="ad-icon">
           <i class="fas fa-video"></i>
-          <strong>Video Editing</strong>
-        </a>
-        <a href="https://altechit.netlify.app" target="_blank" class="eco-card">
+        </div>
+      </div>
+      <div class="ad-card" data-ad="3">
+        <div class="ad-content">
+          <div class="ad-title">Graphic Design</div>
+          <div class="ad-description">Logos, branding & marketing materials</div>
+          <a href="https://altechit.netlify.app" target="_blank" class="ad-link">View Portfolio →</a>
+        </div>
+        <div class="ad-icon">
           <i class="fas fa-paint-brush"></i>
-          <strong>Graphic Design</strong>
-        </a>
-        <a href="https://edulearnit.netlify.app" target="_blank" class="eco-card">
+        </div>
+      </div>
+      <div class="ad-card" data-ad="4">
+        <div class="ad-content">
+          <div class="ad-title">E-Learning Platform</div>
+          <div class="ad-description">Learn new skills online</div>
+          <a href="https://edulearnit.netlify.app" target="_blank" class="ad-link">Start Learning →</a>
+        </div>
+        <div class="ad-icon">
           <i class="fas fa-graduation-cap"></i>
-          <strong>E-Learning</strong>
-        </a>
+        </div>
       </div>
     </div>
+    <div class="ad-indicators" id="adIndicators"></div>
   </div>
 
-  <!-- Enhanced Professional Footer -->
+  <!-- Upgraded Footer -->
   <footer class="footer-pro">
     <div class="footer-content">
-      <div class="footer-brand">
-        <div class="footer-logo">
-          <i class="fas fa-cloud"></i>
+      <div class="footer-main">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <i class="fas fa-cloud"></i>
+          </div>
+          <div class="footer-brand-info">
+            <h4>ALTECH Software</h4>
+            <p>Weather Intelligence Platform</p>
+          </div>
         </div>
-        <div class="footer-brand-text">
-          <h4>ALTECH Software</h4>
-          <p>Weather Intelligence Pro</p>
+        <div class="footer-nav">
+          <a href="#">About</a>
+          <a href="#">Features</a>
+          <a href="#">Privacy</a>
+          <a href="#">Support</a>
         </div>
       </div>
-      <div class="footer-links">
-        <a href="#">About</a>
-        <a href="#">Privacy</a>
-        <a href="#">v2.0.0</a>
+      <div class="footer-bottom">
+        <div class="footer-copyright">
+          © 2024 ALTECH Software Developers. All rights reserved.
+        </div>
         <div class="footer-social">
-          <a href="#"><i class="fab fa-github"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+          <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+          <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+        </div>
+        <div class="footer-version">
+          v2.0.0 Pro
         </div>
       </div>
     </div>
@@ -929,6 +1152,10 @@
     let tempChart = null;
     let clockInterval = null;
     let deferredPrompt = null;
+    let tidesData = [];
+    let showTidesEnabled = false;
+    let adInterval = null;
+    let currentAdIndex = 0;
 
     // Theme Toggle
     const themeToggle = document.getElementById('themeToggle');
@@ -939,7 +1166,6 @@
       } else {
         document.body.classList.remove('light-mode');
       }
-      // Re-render chart if exists
       if (currentWeatherData) {
         setTimeout(() => renderChart(), 100);
       }
@@ -949,7 +1175,8 @@
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      document.getElementById('pwaPrompt').classList.remove('hidden');
+      document.getElementById('installBtn').classList.remove('hidden');
+      document.getElementById('pwaBanner').classList.remove('hidden');
     });
 
     window.installPWA = async () => {
@@ -957,14 +1184,61 @@
         deferredPrompt.prompt();
         const result = await deferredPrompt.userChoice;
         if (result.outcome === 'accepted') {
-          document.getElementById('pwaPrompt').classList.add('hidden');
+          document.getElementById('installBtn').classList.add('hidden');
+          document.getElementById('pwaBanner').classList.add('hidden');
         }
         deferredPrompt = null;
       } else {
-        // Show manual install instructions
-        alert('📱 To install: Tap the browser menu (⋮) and select "Add to Home Screen" or "Install App"');
+        alert('📱 To install: Tap the browser menu (⋮) and select "Add to Home Screen"');
       }
     };
+
+    window.dismissBanner = () => {
+      document.getElementById('pwaBanner').classList.add('hidden');
+    };
+
+    // Ad Carousel
+    function initAdCarousel() {
+      const ads = document.querySelectorAll('.ad-card');
+      const indicators = document.getElementById('adIndicators');
+      
+      // Create indicators
+      ads.forEach((ad, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'ad-dot' + (index === 0 ? ' active' : '');
+        dot.onclick = () => showAd(index);
+        indicators.appendChild(dot);
+      });
+
+      // Auto rotate
+      adInterval = setInterval(() => {
+        currentAdIndex = (currentAdIndex + 1) % ads.length;
+        showAd(currentAdIndex);
+      }, 5000);
+    }
+
+    function showAd(index) {
+      const ads = document.querySelectorAll('.ad-card');
+      const dots = document.querySelectorAll('.ad-dot');
+      
+      ads.forEach((ad, i) => {
+        if (i === index) {
+          ad.classList.add('active');
+        } else {
+          ad.classList.remove('active');
+        }
+      });
+      
+      dots.forEach((dot, i) => {
+        if (i === index) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+      
+      currentAdIndex = index;
+    }
 
     // Show planet loader
     function showLoader() {
@@ -982,6 +1256,19 @@
       const res = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_KEY}&q=${query}&days=5&aqi=yes`);
       if (!res.ok) throw new Error('Location not found');
       return await res.json();
+    }
+
+    // Fetch tides data
+    async function fetchTidesData(lat, lon) {
+      try {
+        const date = new Date().toISOString().split('T')[0];
+        const res = await fetch(`https://www.worldtides.info/api/v3?extremes&lat=${lat}&lon=${lon}&date=${date}&key=${TIDES_KEY}`);
+        const data = await res.json();
+        return data.extremes || [];
+      } catch (error) {
+        console.log('Tides data not available for this location');
+        return [];
+      }
     }
 
     // Render chart
@@ -1033,6 +1320,14 @@
       }
     }
 
+    // Toggle tides display
+    window.toggleTides = function() {
+      showTidesEnabled = !showTidesEnabled;
+      if (currentWeatherData) {
+        renderApp(currentWeatherData);
+      }
+    };
+
     // Render weather app
     async function renderApp(data) {
       currentWeatherData = data;
@@ -1040,6 +1335,11 @@
       const cur = data.current;
       const forecast = data.forecast.forecastday;
       const astro = forecast[0].astro;
+      
+      // Fetch tides if not already fetched
+      if (tidesData.length === 0) {
+        tidesData = await fetchTidesData(loc.lat, loc.lon);
+      }
       
       // Calculate day progress
       const calcProgress = () => {
@@ -1101,6 +1401,53 @@
           </div>
         `;
       });
+
+      // Build tides HTML
+      let tidesHtml = '';
+      if (tidesData.length > 0) {
+        if (showTidesEnabled) {
+          tidesHtml = `
+            <div class="tides-section">
+              <div class="tides-header">
+                <h4><i class="fas fa-water" style="color: #06b6d4;"></i> Tide Extremes</h4>
+                <button class="show-tides-btn" onclick="toggleTides()">
+                  <i class="fas fa-eye-slash"></i> Hide Tides
+                </button>
+              </div>
+              <div class="tides-container">
+          `;
+          
+          tidesData.slice(0, 6).forEach(tide => {
+            const tideTime = new Date(tide.date);
+            tidesHtml += `
+              <div class="tide-card">
+                <div class="tide-type">
+                  ${tide.type === 'High' ? '🌊 High Tide' : '⬇️ Low Tide'}
+                </div>
+                <div class="tide-time">
+                  ${tideTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
+                </div>
+                <div class="tide-height">
+                  ${tide.height.toFixed(1)}m
+                </div>
+              </div>
+            `;
+          });
+          
+          tidesHtml += `
+              </div>
+            </div>
+          `;
+        } else {
+          tidesHtml = `
+            <div class="tides-section">
+              <button class="show-tides-btn" onclick="toggleTides()">
+                <i class="fas fa-water"></i> Show Tide Information
+              </button>
+            </div>
+          `;
+        }
+      }
 
       // Main HTML
       const html = `
@@ -1202,6 +1549,8 @@
         <div style="background:var(--glass); border-radius:28px; padding:20px; margin:20px 0; backdrop-filter:blur(20px);">
           <canvas id="tempChart" style="width:100%; height:180px;"></canvas>
         </div>
+
+        ${tidesHtml}
       `;
 
       document.getElementById('appContent').innerHTML = html;
@@ -1228,7 +1577,11 @@
     // Search functions
     window.searchCity = () => {
       const city = document.getElementById('cityInput').value.trim();
-      if (city) loadWeather(null, null, city);
+      if (city) {
+        tidesData = [];
+        showTidesEnabled = false;
+        loadWeather(null, null, city);
+      }
     };
 
     window.getLocation = () => {
@@ -1237,6 +1590,8 @@
         return;
       }
       showLoader();
+      tidesData = [];
+      showTidesEnabled = false;
       navigator.geolocation.getCurrentPosition(
         pos => loadWeather(pos.coords.latitude, pos.coords.longitude),
         () => {
@@ -1258,8 +1613,17 @@
 
     // Check if already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
-      document.getElementById('pwaPrompt').classList.add('hidden');
+      document.getElementById('pwaBanner').classList.add('hidden');
     }
+
+    // Check if iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS && !window.matchMedia('(display-mode: standalone)').matches) {
+      document.getElementById('pwaBanner').classList.remove('hidden');
+    }
+
+    // Initialize ad carousel
+    initAdCarousel();
 
     // Start with user's location
     getLocation();
